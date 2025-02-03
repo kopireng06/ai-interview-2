@@ -1,10 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   FaCamera,
   FaPause,
   FaPlay,
   FaSave,
-  FaChevronLeft,
   FaChevronRight,
   FaSync,
 } from "react-icons/fa";
@@ -35,6 +34,7 @@ function App() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const [isTalking, setIsTalking] = useState<number>(0);
 
   useEffect(() => {
     initializeCamera();
@@ -51,12 +51,17 @@ function App() {
         video: true,
         audio: true,
       });
+
       setStream(mediaStream);
+
+      audioHandler(mediaStream);
 
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
         videoRef.current.muted = true; // Mute for camera preview
       }
+
+      audioHandler(mediaStream);
     } catch (error) {
       console.error("Error accessing media devices:", error);
       alert(
@@ -66,6 +71,8 @@ function App() {
   };
 
   const startRecording = () => {
+    if (!stream) return;
+
     if (currentRecording) {
       setIsRecording(true);
       if (videoRef.current && stream) {
@@ -73,8 +80,6 @@ function App() {
         videoRef.current.muted = true; // Mute for camera preview
       }
     }
-
-    if (!stream) return;
 
     const mediaRecorder = new MediaRecorder(stream);
     mediaRecorderRef.current = mediaRecorder;
@@ -90,19 +95,14 @@ function App() {
       const blob = new Blob(chunksRef.current, { type: "video/webm" });
       const url = URL.createObjectURL(blob);
 
-      setRecordings((prev) => {
-        const filtered = prev.filter(
-          (r) => r.questionId !== questions[currentQuestion].id
-        );
-        return [
-          ...filtered,
-          {
-            questionId: questions[currentQuestion].id,
-            videoBlob: blob,
-            url,
-          },
-        ];
-      });
+      setRecordings((prev) => [
+        ...prev.filter((r) => r.questionId !== questions[currentQuestion].id),
+        {
+          questionId: questions[currentQuestion].id,
+          videoBlob: blob,
+          url,
+        },
+      ]);
 
       chunksRef.current = [];
     };
@@ -115,6 +115,7 @@ function App() {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+      setIsTalking(0); // Indicate that the user has stopped talking
     }
   };
 
@@ -123,8 +124,14 @@ function App() {
       videoRef.current.srcObject = null;
       videoRef.current.src = recording.url;
       videoRef.current.muted = false; // Unmute for playback
-      videoRef.current.style.transform = "none";
       videoRef.current.play();
+    }
+  };
+
+  const nextQuestion = () => {
+    if (currentQuestion < questions.length - 1 && recordings.length > 0) {
+      setCurrentQuestion((prev) => prev + 1);
+      switchToCamera();
     }
   };
 
@@ -132,20 +139,6 @@ function App() {
     if (videoRef.current && stream) {
       videoRef.current.srcObject = stream;
       videoRef.current.muted = true; // Mute for camera preview
-    }
-  };
-
-  const nextQuestion = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion((prev) => prev + 1);
-      switchToCamera();
-    }
-  };
-
-  const previousQuestion = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion((prev) => prev - 1);
-      switchToCamera();
     }
   };
 
@@ -164,6 +157,29 @@ function App() {
   const currentRecording = recordings.find(
     (r) => r.questionId === questions[currentQuestion].id
   );
+
+  function audioHandler(source: MediaStream) {
+    const audioContext = new (window.AudioContext || window.AudioContext)();
+    const audioInput = audioContext.createMediaStreamSource(source);
+    const analyser = audioContext.createAnalyser();
+    audioInput.connect(analyser);
+    analyser.fftSize = 2048;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    const draw = () => {
+      requestAnimationFrame(draw);
+      analyser.getByteFrequencyData(dataArray);
+
+      // Simple voice activity detection
+      const sum = dataArray.reduce((a, b) => a + b, 0);
+      const average = sum / dataArray.length;
+
+      setIsTalking(average);
+    };
+
+    draw();
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
@@ -187,14 +203,23 @@ function App() {
           </div>
 
           <div className="relative mb-8 group">
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl transform -rotate-1 scale-[1.01] opacity-30 group-hover:opacity-40 transition-all duration-300"></div>
+            <div
+              className={`rounded-2xl absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-30 group-hover:opacity-80 transition-all duration-300`}
+              style={{
+                boxShadow: `0 0 0 ${
+                  isTalking < 20 ? isTalking : 20
+                }px rgba(15, 3, 242, 0.5)`,
+
+                transition: "box-shadow 0.1s linear",
+              }}
+            ></div>
             <div className="relative">
               <video
                 ref={videoRef}
                 autoPlay
                 playsInline
                 muted
-                className="w-full h-[500px] bg-gray-900 rounded-2xl object-cover shadow-lg transition-transform duration-300"
+                className={`w-full h-[500px] bg-gray-900 rounded-2xl object-cover shadow-lg transition-transform duration-300`}
               />
 
               <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
@@ -244,16 +269,11 @@ function App() {
 
           <div className="flex justify-between items-center">
             <button
-              onClick={previousQuestion}
-              disabled={currentQuestion === 0}
-              className="flex items-center gap-2 px-6 py-3 bg-white text-gray-700 rounded-full shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
-            >
-              <FaChevronLeft size={20} />
-              Previous
-            </button>
-            <button
               onClick={nextQuestion}
-              disabled={currentQuestion === questions.length - 1}
+              disabled={
+                currentQuestion === questions.length - 1 ||
+                recordings.length === 0
+              }
               className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
             >
               Next
@@ -267,7 +287,7 @@ function App() {
             Your Recordings
           </h2>
           <div className="space-y-4">
-            {recordings.map((recording, index) => {
+            {recordings.map((recording) => {
               const question = questions.find(
                 (q) => q.id === recording.questionId
               );
@@ -284,10 +304,7 @@ function App() {
                   </div>
                   <div className="flex gap-3">
                     <button
-                      onClick={() => {
-                        playRecording(recording);
-                        setCurrentQuestion(index);
-                      }}
+                      onClick={() => playRecording(recording)}
                       className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-colors duration-300"
                     >
                       <FaPlay size={20} />
