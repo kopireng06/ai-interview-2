@@ -182,29 +182,29 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-primary-tint4 via-white to-primary-tint3">
       <div className="max-w-5xl mx-auto p-8">
         <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 mb-8 transition-all duration-300">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-shade3 to-primary-shade1 bg-clip-text text-transparent">
               Video Interview
             </h1>
             <div className="flex items-center gap-2 text-sm font-medium">
-              <div className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full">
+              <div className="px-3 py-1 bg-primary-tint1 text-white rounded-full">
                 Question {currentQuestion + 1} of {questions.length}
               </div>
             </div>
           </div>
 
           <div className="mb-8">
-            <p className="text-2xl font-medium text-gray-800 mb-2 transition-all duration-300 ease-in-out">
+            <p className="text-2xl font-medium text-gray-neutral90 mb-2 transition-all duration-300 ease-in-out">
               {questions[currentQuestion].text}
             </p>
           </div>
 
           <div className="relative mb-8 group">
             <div
-              className={`rounded-2xl absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-30 group-hover:opacity-80 transition-all duration-300`}
+              className={`rounded-2xl absolute inset-0 bg-gradient-to-r from-primary-shade3 to-primary-shade1 opacity-30 group-hover:opacity-80 transition-all duration-300`}
               style={{
                 boxShadow: `0 0 0 ${
                   isTalking < 20 ? isTalking : 20
@@ -228,7 +228,7 @@ function App() {
                     <>
                       <button
                         onClick={startRecording}
-                        className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
+                        className="flex items-center gap-2 bg-gradient-to-r from-primary-shade3 to-primary-shade1 text-white px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
                       >
                         <FaCamera size={20} />
                         {currentRecording ? "Record Again" : "Start Recording"}
@@ -236,7 +236,7 @@ function App() {
                       {currentRecording && (
                         <button
                           onClick={() => playRecording(currentRecording)}
-                          className="flex items-center gap-2 bg-white text-gray-700 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
+                          className="flex items-center gap-2 bg-white text-gray-neutral70 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
                         >
                           <FaPlay size={20} />
                           Play Recording
@@ -246,7 +246,7 @@ function App() {
                         videoRef.current?.srcObject === null && (
                           <button
                             onClick={switchToCamera}
-                            className="flex items-center gap-2 bg-white text-gray-700 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
+                            className="flex items-center gap-2 bg-white text-gray-neutral70 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
                           >
                             <FaSync size={20} />
                             Switch to Camera
@@ -256,7 +256,7 @@ function App() {
                   ) : (
                     <button
                       onClick={stopRecording}
-                      className="flex items-center gap-2 bg-red-500 text-white px-6 py-3 rounded-full hover:bg-red-600 hover:shadow-lg hover:scale-105 transition-all duration-300"
+                      className="flex items-center gap-2 bg-danger-default text-white px-6 py-3 rounded-full hover:bg-danger-tint1 hover:shadow-lg hover:scale-105 transition-all duration-300"
                     >
                       <FaPause size={20} />
                       Stop Recording
@@ -274,7 +274,7 @@ function App() {
                 currentQuestion === questions.length - 1 ||
                 recordings.length === 0
               }
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-shade3 to-primary-shade1 text-white rounded-full shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
             >
               Next
               <FaChevronRight size={20} />
@@ -283,7 +283,7 @@ function App() {
         </div>
 
         <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-8">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-primary-shade3 to-primary-shade1 bg-clip-text text-transparent mb-6">
             Your Recordings
           </h2>
           <div className="space-y-4">
@@ -297,22 +297,22 @@ function App() {
                   className="flex items-center justify-between p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
                 >
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900 mb-1">
+                    <p className="font-medium text-gray-neutral100 mb-1">
                       Question {question?.id}
                     </p>
-                    <p className="text-gray-600">{question?.text}</p>
+                    <p className="text-gray-neutral70">{question?.text}</p>
                   </div>
                   <div className="flex gap-3">
                     <button
                       onClick={() => playRecording(recording)}
-                      className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-colors duration-300"
+                      className="flex items-center gap-2 text-primary-shade3 hover:text-primary-shade2 transition-colors duration-300"
                     >
                       <FaPlay size={20} />
                       <span className="font-medium">Play</span>
                     </button>
                     <button
                       onClick={() => downloadRecording(recording.questionId)}
-                      className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-colors duration-300"
+                      className="flex items-center gap-2 text-primary-shade3 hover:text-primary-shade2 transition-colors duration-300"
                     >
                       <FaSave size={20} />
                       <span className="font-medium">Download</span>
@@ -323,8 +323,8 @@ function App() {
             })}
             {recordings.length === 0 && (
               <div className="text-center py-12">
-                <p className="text-gray-500 text-lg">No recordings yet</p>
-                <p className="text-gray-400">
+                <p className="text-gray-neutral50 text-lg">No recordings yet</p>
+                <p className="text-gray-neutral40">
                   Start recording your answers to see them here
                 </p>
               </div>
