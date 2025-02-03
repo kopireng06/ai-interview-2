@@ -129,7 +129,7 @@ function App() {
   };
 
   const nextQuestion = () => {
-    if (currentQuestion < questions.length - 1 && recordings.length > 0) {
+    if (currentQuestion < questions.length - 1 && currentRecording) {
       setCurrentQuestion((prev) => prev + 1);
       switchToCamera();
     }
@@ -269,8 +269,7 @@ function App() {
             <button
               onClick={nextQuestion}
               disabled={
-                currentQuestion === questions.length - 1 ||
-                recordings.length === 0
+                currentQuestion === questions.length - 1 || !currentRecording // Disable if current question has no recording
               }
               className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-shade3 to-primary-shade1 text-white rounded-full shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
             >
