@@ -267,7 +267,7 @@ function App() {
             Your Recordings
           </h2>
           <div className="space-y-4">
-            {recordings.map((recording) => {
+            {recordings.map((recording, index) => {
               const question = questions.find(
                 (q) => q.id === recording.questionId
               );
@@ -284,7 +284,10 @@ function App() {
                   </div>
                   <div className="flex gap-3">
                     <button
-                      onClick={() => playRecording(recording)}
+                      onClick={() => {
+                        playRecording(recording);
+                        setCurrentQuestion(index);
+                      }}
                       className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-colors duration-300"
                     >
                       <FaPlay size={20} />
