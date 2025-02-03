@@ -204,11 +204,9 @@ function App() {
 
           <div className="relative mb-8 group">
             <div
-              className={`rounded-2xl absolute inset-0 bg-gradient-to-r from-primary-shade3 to-primary-shade1 opacity-30 group-hover:opacity-80 transition-all duration-300`}
+              className={`rounded-2xl absolute inset-0 bg-gradient-to-r from-primary-shade3 to-primary-shade1 opacity-30 group-hover:opacity-50 transition-all duration-300`}
               style={{
-                boxShadow: `0 0 0 ${
-                  isTalking < 20 ? isTalking : 20
-                }px rgba(15, 3, 242, 0.5)`,
+                boxShadow: `0 0 0 ${isTalking < 20 ? isTalking : 20}px #01959F`,
 
                 transition: "box-shadow 0.1s linear",
               }}
