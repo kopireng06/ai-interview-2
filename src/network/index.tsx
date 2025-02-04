@@ -39,7 +39,7 @@ const useUploadFile = (
     fileName: string;
     blob: Blob;
   }) => {
-    const file = new File([blob], fileName);
+    const file = new File([blob], fileName, { type: "video/webm" });
 
     console.log(file);
 
