@@ -154,7 +154,7 @@ const useSubmitInterview = () => {
         {
           chat_id: startInterviewData.data.chat_id,
           urls: videoUploadData.map((video: any) => video),
-          questions: questions,
+          questions: questions?.map((question) => question.text),
         },
         {
           headers: {
