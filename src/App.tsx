@@ -244,11 +244,8 @@ function App() {
       />
       <div className="min-h-screen bg-gradient-to-br from-primary-tint4 via-white to-primary-tint3">
         <div className="max-w-5xl mx-auto p-8">
-          <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 mb-8 transition-all duration-300">
+          <div className=" backdrop-blur-lg rounded-2xl p-8 mb-8 transition-all duration-300">
             <div className="flex items-center justify-between mb-8">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-shade3 to-primary-shade1 bg-clip-text text-transparent">
-                Video Interview
-              </h1>
               <div className="flex items-center gap-2 text-sm font-medium">
                 <div className="px-3 py-1 bg-primary-tint1 text-white rounded-full">
                   Question {currentQuestion + 1} of {questions.length}
@@ -331,7 +328,7 @@ function App() {
             </div>
 
             {currentQuestion !== questions.length - 1 && (
-              <div className="flex justify-between items-center">
+              <div className="flex justify-end items-center">
                 <button
                   onClick={nextQuestion}
                   disabled={
@@ -367,7 +364,7 @@ function App() {
             )}
           </div>
 
-          <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-8">
+          <div className="rounded-2xl p-8">
             <h2 className="text-2xl font-bold bg-gradient-to-r from-primary-shade3 to-primary-shade1 bg-clip-text text-transparent mb-6">
               Your Recordings
             </h2>
