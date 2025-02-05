@@ -384,7 +384,7 @@ function App() {
 
           {/* Interview Result View */}
 
-          {interviewResult?.data?.status === "finished" && (
+          {isSubmitted && interviewResult && (
             <div className="rounded-2xl p-8 mt-8 shadow-md">
               <h2 className="text-bold text-2xl font-bold text-gray-neutral100 mb-4">
                 Interview Result
