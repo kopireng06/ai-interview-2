@@ -34,7 +34,7 @@ const useFetchInterviewResult = () => {
 
   const { data, error } = useSWR(
     finishInterviewData?.data?.chat_id
-      ? `/interviews/${startInterviewData?.data?.chat_id}/result`
+      ? `ai/interviews/${startInterviewData?.data?.chat_id}/result`
       : null,
     fetchInterviewResult
   );
