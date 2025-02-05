@@ -33,28 +33,25 @@ const useFetchInterviewResult = () => {
         score: number;
         analysis: string;
       }>;
+      analysis_summary: string;
       summary: string;
       status: string;
     };
   }> => {
-    try {
-      const response = await axiosInstance.get(
-        `ai/interviews/${startInterviewData?.data?.chat_id}/result`,
-        {
-          headers: {
-            Authorization: `Bearer ${loginData.data.auth_token}`,
-          },
-        }
-      );
-
-      if (response?.data?.data?.status === "processing") {
-        throw new Error("Interview is still processing");
+    const response = await axiosInstance.get(
+      `ai/interviews/${startInterviewData?.data?.chat_id}/result`,
+      {
+        headers: {
+          Authorization: `Bearer ${loginData.data.auth_token}`,
+        },
       }
+    );
 
-      return response.data;
-    } catch (error) {
-      throw error;
+    if (response?.data?.data?.status === "processing") {
+      throw new Error("Interview is still processing");
     }
+
+    return response.data;
   };
 
   const { data, error } = useSWR(
@@ -66,12 +63,9 @@ const useFetchInterviewResult = () => {
       errorRetryInterval: 3000,
       errorRetryCount: 20,
       onError() {
-        enqueueSnackbar(
-          "Sepertinya belum selesai menganalisa, mencoba lagi dalam 3 detik, harap tunggu",
-          {
-            variant: "info",
-          }
-        );
+        enqueueSnackbar("sedang menganalisa, harap tunggu", {
+          variant: "info",
+        });
 
         return true;
       },

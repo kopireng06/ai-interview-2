@@ -1,7 +1,7 @@
 export const questions = [
   {
     id: 1,
-    text: "Apa yang membuat Anda bertahan di perusahaan sebelumnya dalam jangka waktu yang lama?",
+    text: "Apa komitmen Anda terhadap pekerjaan dan bagaimana Anda menunjukkan komitmen tersebut dalam tugas sehari-hari?",
   },
   {
     id: 2,
@@ -11,10 +11,10 @@ export const questions = [
     id: 3,
     text: "Bagaimana Anda menangani situasi ketika ada perubahan mendadak dalam proyek atau prioritas kerja?",
   },
-  // {
-  //   id: 4,
-  //   text: "Apa yang Anda cari dalam sebuah perusahaan selain gaji dan benefit?",
-  // },
+  {
+    id: 4,
+    text: "Apa yang Anda cari dalam sebuah perusahaan selain gaji dan benefit?",
+  },
   // {
   //   id: 5,
   //   text: "Apa yang Anda ketahui tentang budaya perusahaan kami, dan bagaimana Anda melihat diri Anda cocok dengan budaya tersebut?",

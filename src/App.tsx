@@ -20,6 +20,8 @@ import {
 } from "./network";
 import { questions } from "./network/const";
 
+import ReactMarkdown from "react-markdown";
+
 interface Recording {
   questionId: number;
   videoBlob: Blob;
@@ -381,7 +383,8 @@ function App() {
           </div>
 
           {/* Interview Result View */}
-          {isSubmitted && interviewResult && (
+
+          {interviewResult?.data?.status === "finished" && (
             <div className="rounded-2xl p-8 mt-8 shadow-md">
               <h2 className="text-bold text-2xl font-bold text-gray-neutral100 mb-4">
                 Interview Result
@@ -398,12 +401,13 @@ function App() {
               </div>
               {/* You can add more details from interviewResult as needed */}
 
-              <h2 className="text-bold text-2xl font-bold text-gray-neutral100 mb-4">
+              <h2 className="my-2 text-bold text-2xl font-bold text-gray-neutral100 mb-4">
                 Interview Result Summary
               </h2>
-              <p className="text-gray-neutral70">
-                {interviewResult?.data?.analysis_summary}
-              </p>
+
+              <ReactMarkdown>
+                {`${interviewResult?.data?.analysis_summary}`}
+              </ReactMarkdown>
             </div>
           )}
 
