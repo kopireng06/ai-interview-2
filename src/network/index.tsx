@@ -27,7 +27,7 @@ const useFetchInterviewResult = () => {
 
   const fetchInterviewResult = async () => {
     const response = await axiosInstance.get(
-      `/interviews/${startInterviewData?.data?.chat_id}/result`
+      `ai/interviews/${startInterviewData?.data?.chat_id}/result`
     );
     return response.data;
   };
