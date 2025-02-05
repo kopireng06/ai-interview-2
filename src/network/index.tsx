@@ -21,10 +21,11 @@ const formatBytes = (bytes: number, decimals: number) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
 
-const useFetchInterviewResult = () => {
+const useFetchInterviewResult = (chat_id?: string) => {
   const { data: startInterviewData } = useStartInterview();
   const { data: finishInterviewData } = useFinishInterview();
   const { data: loginData } = useLogin();
+  const [isAnalysing, setIsAnalysing] = useState(false);
 
   const fetchInterviewResult = async (): Promise<{
     data: {
@@ -39,40 +40,45 @@ const useFetchInterviewResult = () => {
     };
   }> => {
     const response = await axiosInstance.get(
-      `ai/interviews/${startInterviewData?.data?.chat_id}/result`,
+      `ai/interviews/${chat_id || startInterviewData?.data?.chat_id}/result`,
       {
         headers: {
-          Authorization: `Bearer ${loginData.data.auth_token}`,
+          Authorization: `Bearer ${loginData?.data?.auth_token}`,
         },
       }
     );
 
     if (response?.data?.data?.status === "processing") {
-      throw new Error("Interview is still processing");
+      setIsAnalysing(true);
+      throw new Error("try");
     }
 
-    return response.data;
+    setIsAnalysing(false);
+
+    return response?.data;
   };
 
-  const { data, error } = useSWR(
-    finishInterviewData?.data?.chat_id
-      ? `ai/interviews/${startInterviewData?.data?.chat_id}/result`
+  const { data, error, mutate } = useSWR(
+    finishInterviewData?.data?.chat_id || chat_id
+      ? [`ai/interviews/${startInterviewData?.data?.chat_id}/result`, chat_id]
       : null,
     fetchInterviewResult,
     {
       errorRetryInterval: 3000,
       errorRetryCount: 20,
-      onError() {
-        enqueueSnackbar("sedang menganalisa, harap tunggu", {
-          variant: "info",
-        });
+      onError(error) {
+        if (error.message === "try") {
+          enqueueSnackbar("Sedang menganalisa, harap tunggu", {
+            variant: "info",
+          });
+        }
 
         return true;
       },
     }
   );
 
-  return { data, error };
+  return { data, error, isAnalysing, mutate };
 };
 
 const useUploadFile = (
@@ -106,7 +112,7 @@ const useUploadFile = (
         },
       });
 
-      enqueueSnackbar("Mengumpulkan video ke HR", {
+      enqueueSnackbar("Mengirim video", {
         variant: "info",
       });
 
@@ -132,12 +138,12 @@ const useUploadFile = (
         },
       });
 
-      enqueueSnackbar("Video sudah dikirim ke HR", { variant: "success" });
+      enqueueSnackbar("Video sukses terupload", { variant: "success" });
 
       await submitInterview([download_url]);
       mutate("video_upload", [...data, download_url]);
     } catch (error) {
-      enqueueSnackbar("Gagal mengumpulkan video ke HR", { variant: "error" });
+      enqueueSnackbar("Gagal mengirim video", { variant: "error" });
       throw error;
     }
   };
@@ -158,7 +164,7 @@ const useLogin = () => {
         email: "student@rakamin.com",
         password: "password",
       });
-      enqueueSnackbar("Login successful", { variant: "success" });
+      enqueueSnackbar("System Ready", { variant: "success" });
       mutate("login", response.data);
       setIsLoggingin(false);
       return response.data;
@@ -217,7 +223,7 @@ const useSubmitInterview = () => {
           },
         }
       );
-      enqueueSnackbar("Video sedang dianalisa oleh HR", { variant: "success" });
+      enqueueSnackbar("Video sedang dianalisa", { variant: "success" });
       mutate("/ai/interviews/submit", true); // Revalidate the submission data
     } catch (error) {
       mutate("/ai/interviews/submit", false);

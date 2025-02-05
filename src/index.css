@@ -1,3 +1,67 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@-webkit-keyframes skeleton-animation {
+  0% {
+    background-position: -200px 0;
+  }
+  to {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+@keyframes skeleton-animation {
+  0% {
+    background-position: -200px 0;
+  }
+  to {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.shimmer {
+  -webkit-animation: skeleton-animation 1.2s ease-in-out infinite;
+  animation: skeleton-animation 1.2s ease-in-out infinite;
+  background-color: #f3fbfc; /* Updated to use a color from tailwind.config.js */
+  background-image: linear-gradient(
+    90deg,
+    #f3fbfc,
+    #01959f,
+    #f3fbfc
+  ); /* Updated gradient colors */
+  background-repeat: no-repeat;
+  background-size: 200px 100%;
+}
+
+@-webkit-keyframes slide-in {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+    width: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+    width: var(--slide-in-width, 100%); /* Use CSS variable for width */
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+    width: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+    width: var(--slide-in-width, 100%); /* Use CSS variable for width */
+  }
+}
+
+.slide-in {
+  -webkit-animation: slide-in 0.5s ease-in forwards;
+  animation: slide-in 0.5s ease-in forwards;
+  --slide-in-width: 33%; /* Default value for width */
+}

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { enqueueSnackbar, SnackbarProvider } from "notistack";
+import { SnackbarProvider } from "notistack";
 import { useState, useRef, useEffect, useMemo } from "react";
 import {
   FaCamera,
@@ -43,12 +43,10 @@ function App() {
   const isLastQuestion = currentQuestion === questions.length - 1;
 
   const { login, data: loginData } = useLogin();
-  const { startInterview: startInterviewFn } = useStartInterview();
+  const { startInterview: startInterviewFn, data } = useStartInterview();
   const { finishInterview: finishInterviewFn } = useFinishInterview();
 
   const { data: interviewResult } = useFetchInterviewResult();
-
-  console.log(interviewResult);
 
   const { uploadFile } = useUploadFile((percentComplete) => {
     setRecordings((prev) =>
@@ -159,6 +157,15 @@ function App() {
   };
 
   const playRecording = (recording: Recording) => {
+    if (isSubmitted && videoRef.current) {
+      setIsPlaying(true); // Set playing state to true
+      videoRef.current.src = recording.url;
+      videoRef.current.muted = false; // Unmute for playback
+      videoRef.current.play();
+      videoRef.current.srcObject = null;
+      return;
+    }
+
     if (videoRef.current) {
       videoRef.current.srcObject = null;
       videoRef.current.src = recording.url;
@@ -167,6 +174,18 @@ function App() {
       setIsPlaying(true); // Set playing state to true
     }
   };
+
+  const checkRecordingPlayed = () => {
+    if (videoRef.current) {
+      videoRef.current.onended = () => {
+        setIsPlaying(false); // Set playing state to false when recording has finished playing
+      };
+    }
+  };
+
+  useEffect(() => {
+    checkRecordingPlayed();
+  }, [currentRecording]);
 
   const pauseRecording = () => {
     if (videoRef.current && isPlaying) {
@@ -189,6 +208,7 @@ function App() {
 
   const switchToCamera = () => {
     if (videoRef.current && stream) {
+      setIsPlaying(false);
       videoRef.current.srcObject = stream;
       videoRef.current.muted = true; // Mute for camera preview
     }
@@ -248,45 +268,48 @@ function App() {
       stream.getTracks().forEach((track) => track.stop());
     }
 
-    const countdownDuration = 3; // 30 seconds
-
-    for (let i = countdownDuration; i >= 0; i--) {
-      setTimeout(async () => {
-        enqueueSnackbar(`Sedang dianalisa oleh HR, tunggu ${i} detik lagi`, {
-          variant: "info",
-        });
-
-        if (i === 0) {
-          await finishInterviewFn();
-        }
-      }, (countdownDuration - i) * 1000);
-    }
+    await finishInterviewFn();
   };
 
   return (
-    <div>
+    <div className="flex bg-gradient-to-br from-primary-tint4 via-white to-primary-tint3">
       <SnackbarProvider
         preventDuplicate
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       />
-      <div className="min-h-screen bg-gradient-to-br from-primary-tint4 via-white to-primary-tint3">
+      <div className="h-screen overflow-auto mx-auto relative">
         <div className="max-w-5xl mx-auto p-8">
-          <div className=" backdrop-blur-lg rounded-2xl p-8 mb-8 transition-all duration-300">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <div className="px-3 py-1 bg-primary-tint1 text-white rounded-full">
-                  Question {currentQuestion + 1} of {questions.length}
+          <p className="mb-4 text-lg font-semibold text-gray-neutral90">
+            Chat Id:{" "}
+            <span className="font-bold text-primary-default">
+              {data?.data?.chat_id}
+            </span>
+          </p>
+
+          <div className=" backdrop-blur-lg rounded-2xl transition-all duration-300">
+            {!isSubmitted && (
+              <>
+                {" "}
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <div className="px-3 py-1 bg-primary-tint1 text-white rounded-full">
+                      Question {currentQuestion + 1} of {questions.length}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+                <div className="mb-8">
+                  <p className="text-xl font-medium text-gray-neutral90 mb-2 transition-all duration-300 ease-in-out">
+                    {questions[currentQuestion].text}
+                  </p>
+                </div>
+              </>
+            )}
 
-            <div className="mb-8">
-              <p className="text-xl font-medium text-gray-neutral90 mb-2 transition-all duration-300 ease-in-out">
-                {questions[currentQuestion].text}
-              </p>
-            </div>
-
-            <div className="relative mb-8 group">
+            <div
+              className={`relative mb-8 group ${
+                (isSubmitted ? isPlaying : true) ? "block" : "hidden"
+              }`}
+            >
               <div
                 id="talking-indicator"
                 className={`rounded-2xl absolute inset-0 bg-gradient-to-r from-primary-shade3 to-primary-shade1 opacity-30 group-hover:opacity-50 transition-all duration-300`}
@@ -316,36 +339,42 @@ function App() {
                             <FaCamera size={20} />
                             {currentRecording
                               ? "Record Again"
-                              : "Start Recording"}
+                              : "Start Answer Question " +
+                                (currentQuestion + 1)}
                           </button>
                         )}
                         {currentRecording && (
                           <div className="flex gap-2">
-                            <button
-                              onClick={() => playRecording(currentRecording)}
-                              className="flex items-center gap-2 bg-white text-gray-neutral70 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
-                            >
-                              <FaPlay size={20} />
-                              Play Recording
-                            </button>
-                            <button
-                              onClick={pauseRecording}
-                              className="flex items-center gap-2 bg-white text-gray-neutral70 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
-                            >
-                              <FaPause size={20} />
-                              Pause
-                            </button>
+                            {isPlaying ? (
+                              <button
+                                onClick={pauseRecording}
+                                className="flex items-center gap-2 bg-white text-gray-neutral70 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
+                              >
+                                <FaPause size={20} />
+                                Pause
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => playRecording(currentRecording)}
+                                className="flex items-center gap-2 bg-white text-gray-neutral70 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
+                              >
+                                <FaPlay size={20} />
+                                Play Recording
+                              </button>
+                            )}
                           </div>
                         )}
-                        {!isSubmitted && (
-                          <button
-                            onClick={switchToCamera}
-                            className="flex items-center gap-2 bg-white text-gray-neutral70 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
-                          >
-                            <FaSync size={20} />
-                            Switch to Camera
-                          </button>
-                        )}
+                        {!isSubmitted &&
+                          videoRef.current?.srcObject === null &&
+                          stream?.active && (
+                            <button
+                              onClick={switchToCamera}
+                              className="flex items-center gap-2 bg-white text-gray-neutral70 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
+                            >
+                              <FaSync size={20} />
+                              Switch to Camera
+                            </button>
+                          )}
                       </>
                     ) : (
                       <button
@@ -360,9 +389,16 @@ function App() {
                 </div>
               </div>
             </div>
-
-            {currentQuestion !== questions.length - 1 && (
-              <div className="flex justify-end items-center">
+            <div className="flex justify-between items-center">
+              <button
+                onClick={() => {
+                  window.location.href = "/check";
+                }}
+                className="z-10 bg-primary-shade1 text-white px-4 py-2 rounded-lg hover:bg-primary-shade2 transition duration-300"
+              >
+                Check Previous interview result
+              </button>
+              {currentQuestion !== questions.length - 1 && (
                 <button
                   onClick={nextQuestion}
                   disabled={
@@ -372,13 +408,13 @@ function App() {
                   }
                   className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-shade3 to-primary-shade1 text-white rounded-full shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                 >
-                  Next
+                  Next Question
                   <FaChevronRight size={20} />
                 </button>
-              </div>
-            )}
+              )}
+            </div>
 
-            {recordings.length === questions.length && !isSubmitted && (
+            {currentQuestion === questions?.length - 1 && !isSubmitted && (
               <button
                 onClick={handleSubmit}
                 disabled={recordings.length !== questions.length}
@@ -397,14 +433,89 @@ function App() {
               </div>
             )}
           </div>
+        </div>
 
-          {/* Interview Result View */}
-
-          {isSubmitted && interviewResult && (
-            <div className="rounded-2xl p-8 mt-8 shadow-md">
-              <h2 className="text-bold text-2xl font-bold text-gray-neutral100 mb-4">
-                Interview Result
-              </h2>
+        <div className="rounded-2xl p-8 max-w-5xl m-auto">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-primary-shade3 to-primary-shade1 bg-clip-text text-transparent mb-6">
+            Your Recordings
+          </h2>
+          <div className="space-y-4">
+            {recordings.map((recording) => {
+              const question = questions.find(
+                (q) => q.id === recording.questionId
+              );
+              return (
+                <div
+                  key={recording.questionId}
+                  className="flex items-center justify-between p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+                >
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-neutral100 mb-1">
+                      Question {question?.id}
+                    </p>
+                    <p className="text-gray-neutral70">{question?.text}</p>
+                    <div className="flex items-center mt-4">
+                      {recording.uploadProgress === 0 && (
+                        <p className="text-gray-neutral50 text-sm text-center mx-auto">
+                          {currentQuestion === questions.length - 1
+                            ? "Submit to upload"
+                            : "Go next question to upload"}
+                        </p>
+                      )}
+                      {recording.uploadProgress > 0 && (
+                        <div className="flex items-center w-full">
+                          <p className="text-gray-neutral50 text-sm mr-2">
+                            {recording.uploadProgress}%
+                          </p>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-primary-shade3 h-2 rounded-full"
+                              style={{
+                                width: `${recording.uploadProgress}%`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => playRecording(recording)}
+                      className="flex items-center gap-2 text-primary-shade3 hover:text-primary-shade2 transition-colors duration-300"
+                    >
+                      <FaPlay size={20} />
+                      <span className="font-medium">Play</span>
+                    </button>
+                    <button
+                      onClick={() => downloadRecording(recording.questionId)}
+                      className="flex items-center gap-2 text-primary-shade3 hover:text-primary-shade2 transition-colors duration-300"
+                    >
+                      <FaSave size={20} />
+                      <span className="font-medium">Download</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+            {recordings.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-gray-neutral50 text-lg">No recordings yet</p>
+                <p className="text-gray-neutral40">
+                  Start recording your answers to see them here
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      {isSubmitted && (
+        <div className="rounded-2xl p-8 shadow-md w-1/3 slide-in h-screen overflow-auto">
+          <h2 className="text-bold text-2xl font-bold text-gray-neutral100 mb-4">
+            Interview Result
+          </h2>
+          {interviewResult ? (
+            <>
               <div className="space-y-4">
                 {interviewResult?.data?.evaluations.map((evaluation) => (
                   <div key={evaluation.criteria}>
@@ -415,95 +526,24 @@ function App() {
                   </div>
                 ))}
               </div>
-              {/* You can add more details from interviewResult as needed */}
-
-              <h2 className="my-2 text-bold text-2xl font-bold text-gray-neutral100 mb-4">
-                Interview Result Summary
+              <h2 className="mt-2 mb-1 text-bold text-2xl font-bold text-gray-neutral100">
+                Summary
               </h2>
 
               <ReactMarkdown>
                 {`${interviewResult?.data?.analysis_summary}`}
               </ReactMarkdown>
+            </>
+          ) : (
+            <div className="w-full">
+              <p>Analysing...</p>
+              <div className="mt-2 shimmer w-full h-4 rounded-lg" />
+              <div className="mt-2 shimmer w-full h-4 rounded-lg" />
+              <div className="mt-2 shimmer w-full h-4 rounded-lg" />
             </div>
           )}
-
-          <div className="rounded-2xl p-8">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-primary-shade3 to-primary-shade1 bg-clip-text text-transparent mb-6">
-              Your Recordings
-            </h2>
-            <div className="space-y-4">
-              {recordings.map((recording) => {
-                const question = questions.find(
-                  (q) => q.id === recording.questionId
-                );
-                return (
-                  <div
-                    key={recording.questionId}
-                    className="flex items-center justify-between p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
-                  >
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-neutral100 mb-1">
-                        Question {question?.id}
-                      </p>
-                      <p className="text-gray-neutral70">{question?.text}</p>
-                      <div className="flex items-center mt-4">
-                        {recording.uploadProgress === 0 && (
-                          <p className="text-gray-neutral50 text-sm text-center mx-auto">
-                            {currentQuestion === questions.length - 1
-                              ? "Submit to upload..."
-                              : "Go next question to upload..."}
-                          </p>
-                        )}
-                        {recording.uploadProgress > 0 && (
-                          <div className="flex items-center w-full">
-                            <p className="text-gray-neutral50 text-sm mr-2">
-                              {recording.uploadProgress}%
-                            </p>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                              <div
-                                className="bg-primary-shade3 h-2 rounded-full"
-                                style={{
-                                  width: `${recording.uploadProgress}%`,
-                                }}
-                              />
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex gap-3">
-                      <button
-                        onClick={() => playRecording(recording)}
-                        className="flex items-center gap-2 text-primary-shade3 hover:text-primary-shade2 transition-colors duration-300"
-                      >
-                        <FaPlay size={20} />
-                        <span className="font-medium">Play</span>
-                      </button>
-                      <button
-                        onClick={() => downloadRecording(recording.questionId)}
-                        className="flex items-center gap-2 text-primary-shade3 hover:text-primary-shade2 transition-colors duration-300"
-                      >
-                        <FaSave size={20} />
-                        <span className="font-medium">Download</span>
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-              {recordings.length === 0 && (
-                <div className="text-center py-12">
-                  <p className="text-gray-neutral50 text-lg">
-                    No recordings yet
-                  </p>
-                  <p className="text-gray-neutral40">
-                    Start recording your answers to see them here
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
