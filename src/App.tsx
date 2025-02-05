@@ -390,7 +390,7 @@ function App() {
                 {interviewResult?.data?.evaluations.map((evaluation) => (
                   <div key={evaluation.criteria}>
                     <p className="font-bold text-gray-neutral70">
-                      {evaluation.criteria}
+                      {evaluation.criteria} ({evaluation.score})
                     </p>
                     <p className="text-gray-neutral70">{evaluation.analysis}</p>
                   </div>

@@ -205,7 +205,7 @@ const useSubmitInterview = () => {
         "/ai/interviews/submit",
         {
           chat_id: startInterviewData.data.chat_id,
-          urls: [videoUploadData[videoUploadData.length - 1]],
+          urls: videoUploadData[videoUploadData.length - 1],
           questions: [questions[videoUploadData.length - 1].text],
         },
         {
@@ -245,6 +245,11 @@ const useFinishInterview = () => {
           },
         }
       );
+      // Save chat_id to local storage
+      const chatIds = JSON.parse(localStorage.getItem("chatIds") || "") || [];
+      chatIds.push(startInterviewData.data.chat_id);
+      localStorage.setItem("chatIds", JSON.stringify(chatIds));
+
       enqueueSnackbar("Interview selesai, terima kasih", {
         variant: "success",
       });
