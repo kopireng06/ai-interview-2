@@ -319,17 +319,15 @@ function App() {
                             Play Recording
                           </button>
                         )}
-                        {currentRecording &&
-                          videoRef.current?.srcObject === null &&
-                          !isSubmitted && (
-                            <button
-                              onClick={switchToCamera}
-                              className="flex items-center gap-2 bg-white text-gray-neutral70 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
-                            >
-                              <FaSync size={20} />
-                              Switch to Camera
-                            </button>
-                          )}
+                        {!isSubmitted && (
+                          <button
+                            onClick={switchToCamera}
+                            className="flex items-center gap-2 bg-white text-gray-neutral70 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
+                          >
+                            <FaSync size={20} />
+                            Switch to Camera
+                          </button>
+                        )}
                       </>
                     ) : (
                       <button
