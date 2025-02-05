@@ -37,15 +37,24 @@ const useFetchInterviewResult = () => {
       status: string;
     };
   }> => {
-    const response = await axiosInstance.get(
-      `ai/interviews/${startInterviewData?.data?.chat_id}/result`,
-      {
-        headers: {
-          Authorization: `Bearer ${loginData.data.auth_token}`,
-        },
+    try {
+      const response = await axiosInstance.get(
+        `ai/interviews/${startInterviewData?.data?.chat_id}/result`,
+        {
+          headers: {
+            Authorization: `Bearer ${loginData.data.auth_token}`,
+          },
+        }
+      );
+
+      if (response?.data?.data?.status === "processing") {
+        throw new Error("Interview is still processing");
       }
-    );
-    return response.data;
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const { data, error } = useSWR(
