@@ -32,13 +32,13 @@ interface Recording {
 function App() {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  const [isPaused, setIsPaused] = useState<boolean>(false); // New state for pause
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false); // New state for playing
 
   const isLastQuestion = currentQuestion === questions.length - 1;
 
@@ -106,6 +106,14 @@ function App() {
 
     if (!stream) return;
 
+    if (currentRecording) {
+      setIsRecording(true);
+      if (videoRef.current && stream) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.muted = true; // Mute for camera preview
+      }
+    }
+
     const mediaRecorder = new MediaRecorder(stream);
     mediaRecorderRef.current = mediaRecorder;
     chunksRef.current = [];
@@ -135,7 +143,6 @@ function App() {
 
     mediaRecorder.start();
     setIsRecording(true);
-    setIsPaused(false); // Reset pause state when starting
   };
 
   const currentRecording = useMemo(
@@ -151,26 +158,20 @@ function App() {
     }
   };
 
-  const pauseRecording = () => {
-    if (mediaRecorderRef.current && isRecording && !isPaused) {
-      mediaRecorderRef.current.pause();
-      setIsPaused(true);
-    }
-  };
-
-  const resumeRecording = () => {
-    if (mediaRecorderRef.current && isRecording && isPaused) {
-      mediaRecorderRef.current.resume();
-      setIsPaused(false);
-    }
-  };
-
   const playRecording = (recording: Recording) => {
     if (videoRef.current) {
       videoRef.current.srcObject = null;
       videoRef.current.src = recording.url;
       videoRef.current.muted = false; // Unmute for playback
       videoRef.current.play();
+      setIsPlaying(true); // Set playing state to true
+    }
+  };
+
+  const pauseRecording = () => {
+    if (videoRef.current && isPlaying) {
+      videoRef.current.pause();
+      setIsPlaying(false); // Set playing state to false
     }
   };
 
@@ -302,8 +303,8 @@ function App() {
                   className={`w-full h-[500px] bg-gray-900 rounded-2xl object-cover shadow-lg transition-transform duration-300`}
                 />
 
-                <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
-                  <div className="flex gap-4">
+                <div className="w-full absolute bottom-6 left-1/2 transform -translate-x-1/2">
+                  <div className="flex gap-4 justify-center">
                     {!isRecording ? (
                       <>
                         {!isSubmitted && (
@@ -319,13 +320,22 @@ function App() {
                           </button>
                         )}
                         {currentRecording && (
-                          <button
-                            onClick={() => playRecording(currentRecording)}
-                            className="flex items-center gap-2 bg-white text-gray-neutral70 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
-                          >
-                            <FaPlay size={20} />
-                            Play Recording
-                          </button>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => playRecording(currentRecording)}
+                              className="flex items-center gap-2 bg-white text-gray-neutral70 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
+                            >
+                              <FaPlay size={20} />
+                              Play Recording
+                            </button>
+                            <button
+                              onClick={pauseRecording}
+                              className="flex items-center gap-2 bg-white text-gray-neutral70 px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
+                            >
+                              <FaPause size={20} />
+                              Pause
+                            </button>
+                          </div>
                         )}
                         {!isSubmitted && (
                           <button
@@ -338,31 +348,13 @@ function App() {
                         )}
                       </>
                     ) : (
-                      <>
-                        <button
-                          onClick={stopRecording}
-                          className="flex items-center gap-2 bg-danger-default text-white px-6 py-3 rounded-full hover:bg-danger-tint1 hover:shadow-lg hover:scale-105 transition-all duration-300"
-                        >
-                          <FaPause size={20} />
-                          Stop Recording
-                        </button>
-                        <button
-                          onClick={pauseRecording}
-                          className="flex items-center gap-2 bg-yellow-500 text-white px-6 py-3 rounded-full hover:bg-yellow-400 hover:shadow-lg hover:scale-105 transition-all duration-300"
-                          disabled={isPaused}
-                        >
-                          <FaPause size={20} />
-                          Pause
-                        </button>
-                        <button
-                          onClick={resumeRecording}
-                          className="flex items-center gap-2 bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-400 hover:shadow-lg hover:scale-105 transition-all duration-300"
-                          disabled={!isPaused}
-                        >
-                          <FaPlay size={20} />
-                          Resume
-                        </button>
-                      </>
+                      <button
+                        onClick={stopRecording}
+                        className="flex items-center gap-2 bg-danger-default text-white px-6 py-3 rounded-full hover:bg-danger-tint1 hover:shadow-lg hover:scale-105 transition-all duration-300"
+                      >
+                        <FaPause size={20} />
+                        Stop Recording
+                      </button>
                     )}
                   </div>
                 </div>
