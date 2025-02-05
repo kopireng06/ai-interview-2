@@ -1,9 +1,4 @@
-interface Question {
-  id: number;
-  text: string;
-}
-
-export const questions: Question[] = [
+export const questions = [
   {
     id: 1,
     text: "Apa yang membuat Anda bertahan di perusahaan sebelumnya dalam jangka waktu yang lama?",
