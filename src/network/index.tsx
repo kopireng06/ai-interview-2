@@ -245,10 +245,6 @@ const useFinishInterview = () => {
           },
         }
       );
-      // Save chat_id to local storage
-      const chatIds = JSON.parse(localStorage.getItem("chatIds") || "") || [];
-      chatIds.push(startInterviewData.data.chat_id);
-      localStorage.setItem("chatIds", JSON.stringify(chatIds));
 
       enqueueSnackbar("Interview selesai, terima kasih", {
         variant: "success",
