@@ -221,12 +221,13 @@ function App() {
   }
 
   const handleSubmit = async () => {
+    setIsSubmitted(true);
+
     await uploadFile({
       blob: currentRecording!.videoBlob,
       fileName: `question-${questions[currentQuestion].id}-response.webm`,
     });
 
-    setIsSubmitted(true);
     if (videoRef.current && currentRecording) {
       videoRef.current.srcObject = null;
       videoRef.current.src = currentRecording.url; // Set video to latest recording
@@ -236,7 +237,7 @@ function App() {
       stream.getTracks().forEach((track) => track.stop());
     }
 
-    const countdownDuration = 30; // 30 seconds
+    const countdownDuration = 3; // 30 seconds
 
     for (let i = countdownDuration; i >= 0; i--) {
       setTimeout(async () => {
@@ -378,6 +379,26 @@ function App() {
               </div>
             )}
           </div>
+
+          {/* Interview Result View */}
+          {isSubmitted && interviewResult && (
+            <div className="rounded-2xl p-8 mt-8 shadow-md">
+              <h2 className="text-bold text-2xl font-bold text-gray-neutral100 mb-4">
+                Interview Result
+              </h2>
+              <div className="space-y-4">
+                {interviewResult?.data?.evaluations.map((evaluation) => (
+                  <div key={evaluation.criteria}>
+                    <p className="font-bold text-gray-neutral70">
+                      {evaluation.criteria}
+                    </p>
+                    <p className="text-gray-neutral70">{evaluation.analysis}</p>
+                  </div>
+                ))}
+              </div>
+              {/* You can add more details from interviewResult as needed */}
+            </div>
+          )}
 
           <div className="rounded-2xl p-8">
             <h2 className="text-2xl font-bold bg-gradient-to-r from-primary-shade3 to-primary-shade1 bg-clip-text text-transparent mb-6">

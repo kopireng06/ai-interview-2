@@ -24,10 +24,26 @@ const formatBytes = (bytes: number, decimals: number) => {
 const useFetchInterviewResult = () => {
   const { data: startInterviewData } = useStartInterview();
   const { data: finishInterviewData } = useFinishInterview();
+  const { data: loginData } = useLogin();
 
-  const fetchInterviewResult = async () => {
+  const fetchInterviewResult = async (): Promise<{
+    data: {
+      evaluations: Array<{
+        criteria: string;
+        score: number;
+        analysis: string;
+      }>;
+      summary: string;
+      status: string;
+    };
+  }> => {
     const response = await axiosInstance.get(
-      `ai/interviews/${startInterviewData?.data?.chat_id}/result`
+      `ai/interviews/${startInterviewData?.data?.chat_id}/result`,
+      {
+        headers: {
+          Authorization: `Bearer ${loginData.data.auth_token}`,
+        },
+      }
     );
     return response.data;
   };
@@ -36,7 +52,21 @@ const useFetchInterviewResult = () => {
     finishInterviewData?.data?.chat_id
       ? `ai/interviews/${startInterviewData?.data?.chat_id}/result`
       : null,
-    fetchInterviewResult
+    fetchInterviewResult,
+    {
+      errorRetryInterval: 3000,
+      errorRetryCount: 20,
+      onError() {
+        enqueueSnackbar(
+          "Sepertinya belum selesai menganalisa, mencoba lagi dalam 3 detik, harap tunggu",
+          {
+            variant: "info",
+          }
+        );
+
+        return true;
+      },
+    }
   );
 
   return { data, error };
