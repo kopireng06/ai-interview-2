@@ -21,6 +21,27 @@ const formatBytes = (bytes: number, decimals: number) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
 
+const useFetchInterviewResult = () => {
+  const { data: startInterviewData } = useStartInterview();
+  const { data: finishInterviewData } = useFinishInterview();
+
+  const fetchInterviewResult = async () => {
+    const response = await axiosInstance.get(
+      `/interviews/${startInterviewData?.data?.chat_id}/result`
+    );
+    return response.data;
+  };
+
+  const { data, error } = useSWR(
+    finishInterviewData?.data?.chat_id
+      ? `/interviews/${startInterviewData?.data?.chat_id}/result`
+      : null,
+    fetchInterviewResult
+  );
+
+  return { data, error };
+};
+
 const useUploadFile = (
   onUploadProgress?: (
     percentComplete: number,
@@ -28,6 +49,8 @@ const useUploadFile = (
     totalFilesize: string
   ) => void
 ) => {
+  const { submitInterview } = useSubmitInterview();
+
   const { data } = useSWR("video_upload", {
     fallbackData: [],
   });
@@ -41,8 +64,6 @@ const useUploadFile = (
   }) => {
     const file = new File([blob], fileName, { type: "video/webm" });
 
-    console.log(file);
-
     try {
       const response = await axiosInstance.get("/uploads/presign_no_auth", {
         params: {
@@ -52,13 +73,12 @@ const useUploadFile = (
         },
       });
 
-      enqueueSnackbar("Mengumpulkan video ke HR...", {
+      enqueueSnackbar("Mengumpulkan video ke HR", {
         variant: "info",
       });
 
       const { upload_url, download_url } = response?.data?.data || {};
 
-      console.log(file);
       await axios({
         method: "put",
         url: upload_url,
@@ -79,8 +99,9 @@ const useUploadFile = (
         },
       });
 
-      enqueueSnackbar("Video sudah dikirim ke HR...", { variant: "success" });
+      enqueueSnackbar("Video sudah dikirim ke HR", { variant: "success" });
 
+      await submitInterview([download_url]);
       mutate("video_upload", [...data, download_url]);
     } catch (error) {
       enqueueSnackbar("Gagal mengumpulkan video ke HR", { variant: "error" });
@@ -129,7 +150,9 @@ const useStartInterview = () => {
           Authorization: `Bearer ${loginData.data.auth_token}`,
         },
       });
-      enqueueSnackbar("Interview started", { variant: "info" });
+      enqueueSnackbar("Interview dimulai, semoga berhasil", {
+        variant: "info",
+      });
       mutate("/ai/interviews/start", response.data); // Revalidate the interview data
       return response.data;
     } catch (error) {
@@ -144,17 +167,16 @@ const useStartInterview = () => {
 const useSubmitInterview = () => {
   const { data: loginData } = useLogin();
   const { data: startInterviewData } = useStartInterview();
-  const { data: videoUploadData } = useUploadFile();
   const { data: isSubmittedData } = useSWR("/ai/interviews/submit");
 
-  const submitInterview = async () => {
+  const submitInterview = async (videoUploadData: string[]) => {
     try {
       await axiosInstance.post(
         "/ai/interviews/submit",
         {
           chat_id: startInterviewData.data.chat_id,
-          urls: videoUploadData.map((video: any) => video),
-          questions: questions?.map((question) => question.text),
+          urls: [videoUploadData[videoUploadData.length - 1]],
+          questions: [questions[videoUploadData.length - 1]],
         },
         {
           headers: {
@@ -162,7 +184,7 @@ const useSubmitInterview = () => {
           },
         }
       );
-      enqueueSnackbar("Interview submitted", { variant: "success" });
+      enqueueSnackbar("Video sedang dianalisa oleh HR", { variant: "success" });
       mutate("/ai/interviews/submit", true); // Revalidate the submission data
     } catch (error) {
       mutate("/ai/interviews/submit", false);
@@ -193,7 +215,9 @@ const useFinishInterview = () => {
           },
         }
       );
-      enqueueSnackbar("Interview finished", { variant: "success" });
+      enqueueSnackbar("Interview selesai, terima kasih", {
+        variant: "success",
+      });
       mutate("/ai/interviews/finish", response.data); // Revalidate the finish data
       return response.data;
     } catch (error) {
@@ -211,4 +235,5 @@ export {
   useFinishInterview,
   useLogin,
   useUploadFile,
+  useFetchInterviewResult,
 };

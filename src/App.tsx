@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { SnackbarProvider } from "notistack";
+import { enqueueSnackbar, SnackbarProvider } from "notistack";
 import { useState, useRef, useEffect, useMemo } from "react";
 import {
   FaCamera,
@@ -14,9 +14,9 @@ import {
 import {
   useLogin,
   useStartInterview,
-  useSubmitInterview,
   useFinishInterview,
   useUploadFile,
+  useFetchInterviewResult,
 } from "./network";
 import { questions } from "./network/const";
 
@@ -41,8 +41,11 @@ function App() {
 
   const { login, data: loginData } = useLogin();
   const { startInterview: startInterviewFn } = useStartInterview();
-  const { submitInterview: submitInterviewFn } = useSubmitInterview();
   const { finishInterview: finishInterviewFn } = useFinishInterview();
+
+  const { data: interviewResult } = useFetchInterviewResult();
+
+  console.log(interviewResult);
 
   const { uploadFile } = useUploadFile((percentComplete) => {
     setRecordings((prev) =>
@@ -123,13 +126,13 @@ function App() {
       const url = URL.createObjectURL(blob);
 
       setRecordings((prev) => [
-        ...prev.filter((r) => r.questionId !== questions[currentQuestion].id),
         {
           questionId: questions[currentQuestion].id,
           videoBlob: blob,
           url,
           uploadProgress: 0,
         },
+        ...prev.filter((r) => r.questionId !== questions[currentQuestion].id),
       ]);
 
       chunksRef.current = [];
@@ -223,8 +226,6 @@ function App() {
       fileName: `question-${questions[currentQuestion].id}-response.webm`,
     });
 
-    await submitInterviewFn();
-    await finishInterviewFn();
     setIsSubmitted(true);
     if (videoRef.current && currentRecording) {
       videoRef.current.srcObject = null;
@@ -233,6 +234,20 @@ function App() {
     }
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
+    }
+
+    const countdownDuration = 30; // 30 seconds
+
+    for (let i = countdownDuration; i >= 0; i--) {
+      setTimeout(async () => {
+        enqueueSnackbar(`Sedang dianalisa oleh HR, tunggu ${i} detik lagi`, {
+          variant: "info",
+        });
+
+        if (i === 0) {
+          await finishInterviewFn();
+        }
+      }, (countdownDuration - i) * 1000);
     }
   };
 
@@ -369,7 +384,7 @@ function App() {
               Your Recordings
             </h2>
             <div className="space-y-4">
-              {recordings.reverse().map((recording) => {
+              {recordings.map((recording) => {
                 const question = questions.find(
                   (q) => q.id === recording.questionId
                 );
