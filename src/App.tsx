@@ -397,6 +397,13 @@ function App() {
                 ))}
               </div>
               {/* You can add more details from interviewResult as needed */}
+
+              <h2 className="text-bold text-2xl font-bold text-gray-neutral100 mb-4">
+                Interview Result Summary
+              </h2>
+              <p className="text-gray-neutral70">
+                {interviewResult?.data?.analysis_summary}
+              </p>
             </div>
           )}
 
