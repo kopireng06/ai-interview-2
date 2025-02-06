@@ -215,7 +215,7 @@ const useSubmitInterview = () => {
         {
           chat_id: startInterviewData.data.chat_id,
           urls: [videoUploadData[videoUploadData.length - 1]],
-          questions: questions[videoUploadData.length - 1].text,
+          question: questions[videoUploadData.length - 1].text,
         },
         {
           headers: {
