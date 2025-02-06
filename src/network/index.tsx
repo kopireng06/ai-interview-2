@@ -140,7 +140,7 @@ const useUploadFile = (
 
       enqueueSnackbar("Video sukses terupload", { variant: "success" });
 
-      await submitInterview([download_url]);
+      await submitInterview([...data, download_url]);
       mutate("video_upload", [...data, download_url]);
     } catch (error) {
       enqueueSnackbar("Gagal mengirim video", { variant: "error" });
