@@ -396,7 +396,7 @@ function App() {
                 }}
                 className="z-10 bg-primary-shade1 text-white px-4 py-2 rounded-lg hover:bg-primary-shade2 transition duration-300"
               >
-                Check Previous interview result
+                Check Previous Interview Result
               </button>
               {currentQuestion !== questions.length - 1 && (
                 <button
@@ -459,7 +459,7 @@ function App() {
                         <p className="text-gray-neutral50 text-sm text-center mx-auto">
                           {currentQuestion === questions.length - 1
                             ? "Submit to upload"
-                            : "Go next question to upload"}
+                            : "Go to the next question to upload"}
                         </p>
                       )}
                       {recording.uploadProgress > 0 && (
