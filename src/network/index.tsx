@@ -2,7 +2,7 @@
 import useSWR, { mutate } from "swr";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
-import { questions } from "./const";
+import { questions } from "../const";
 import { useState } from "react";
 
 const axiosInstance = axios.create({

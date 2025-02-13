@@ -18,7 +18,7 @@ import {
   useUploadFile,
   useFetchInterviewResult,
 } from "./network";
-import { questions } from "./network/const";
+import { questions } from "./const";
 
 import ReactMarkdown from "react-markdown";
 
