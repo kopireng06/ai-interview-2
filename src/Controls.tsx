@@ -144,7 +144,7 @@ export default function Controls() {
     });
   }
 
-  const { transcript } = useSpeechRecognition({
+  useSpeechRecognition({
     language: "id",
     clearTranscriptOnListen: true,
 
@@ -180,8 +180,6 @@ export default function Controls() {
   });
 
   const isLastQuestion = currentQuestion === questions.length;
-
-  console.log(currentQuestion, questions.length, transcript);
 
   const isLoggedIn = !!loginData?.data?.auth_token;
 
@@ -289,9 +287,6 @@ export default function Controls() {
       videoRef.srcObject = null;
       videoRef.src = currentRecording.url; // Set video to latest recording
       videoRef.play();
-    }
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
     }
 
     await finishInterviewFn();

@@ -12,7 +12,7 @@ export default function Result() {
   }
 
   return (
-    <div className="rounded-2xl p-8 slide-in overflow-auto">
+    <div className="rounded-2xl p-8 slide-in overflow-auto max-h-[500px] overflow-y-auto">
       <h2 className="text-white text-bold text-2xl font-bold text-gray-neutral100 mb-4">
         Interview Result
       </h2>
@@ -21,18 +21,18 @@ export default function Result() {
           <div className="space-y-4">
             {interviewResult?.data?.evaluations.map((evaluation) => (
               <div key={evaluation.criteria}>
-                <p className="font-bold text-gray-neutral70">
+                <p className="font-bold text-white">
                   {evaluation.criteria} ({evaluation.score})
                 </p>
-                <p className="text-gray-neutral70">{evaluation.analysis}</p>
+                <p className="text-white">{evaluation.analysis}</p>
               </div>
             ))}
           </div>
-          <h2 className="mt-2 mb-1 text-bold text-2xl font-bold text-gray-neutral100">
+          <h2 className="text-white mt-2 mb-1 text-bold text-2xl font-bold text-gray-neutral100">
             Summary
           </h2>
 
-          <ReactMarkdown>
+          <ReactMarkdown className="text-white">
             {`${interviewResult?.data?.analysis_summary}`}
           </ReactMarkdown>
         </>
