@@ -4,6 +4,8 @@ import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { questions } from "../const";
 import { useState } from "react";
+import { useAtomValue } from "jotai";
+import { currentQuestionAtom } from "../state/atom";
 
 const axiosInstance = axios.create({
   baseURL: "https://api-staging.rakamin.com/api/v1",
@@ -207,6 +209,7 @@ const useSubmitInterview = () => {
   const { data: loginData } = useLogin();
   const { data: startInterviewData } = useStartInterview();
   const { data: isSubmittedData } = useSWR("/ai/interviews/submit");
+  const currentQuestion = useAtomValue(currentQuestionAtom);
 
   const submitInterview = async (videoUploadData: string[]) => {
     try {
@@ -215,7 +218,7 @@ const useSubmitInterview = () => {
         {
           chat_id: startInterviewData.data.chat_id,
           urls: [videoUploadData[videoUploadData.length - 1]],
-          question: questions[videoUploadData.length - 1].text,
+          question: questions[currentQuestion].text,
         },
         {
           headers: {
@@ -223,7 +226,6 @@ const useSubmitInterview = () => {
           },
         }
       );
-      enqueueSnackbar("Video sedang dianalisa", { variant: "success" });
       mutate("/ai/interviews/submit", true); // Revalidate the submission data
     } catch (error) {
       mutate("/ai/interviews/submit", false);

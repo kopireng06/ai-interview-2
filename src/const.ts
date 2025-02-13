@@ -13,7 +13,7 @@ export const questions = [
   },
   {
     id: 4,
-    text: "Pernahkah Anda membantu seseorang yang sedang mengalami kesulitan atau frustrasi? Bagaimana Anda mengenali kebutuhan mereka? Apa dampak dari tindakan Anda?",
+    text: "Pernahkah Anda membantu seseorang yang sedang mengalami kesulitan atau frustasi? Bagaimana Anda mengenali kebutuhan mereka? Apa dampak dari tindakan Anda?",
   },
   {
     id: 5,
