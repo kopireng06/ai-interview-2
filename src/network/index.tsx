@@ -91,6 +91,8 @@ const useUploadFile = (
   ) => void
 ) => {
   const { submitInterview } = useSubmitInterview();
+  const currentQuestion = useAtomValue(currentQuestionAtom);
+  const { finishInterview } = useFinishInterview();
 
   const { data } = useSWR("video_upload", {
     fallbackData: [],
@@ -144,6 +146,10 @@ const useUploadFile = (
 
       await submitInterview([...data, download_url]);
       mutate("video_upload", [...data, download_url]);
+
+      if (currentQuestion === questions.length - 1) {
+        await finishInterview();
+      }
     } catch (error) {
       enqueueSnackbar("Gagal mengirim video", { variant: "error" });
       throw error;

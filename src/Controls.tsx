@@ -288,8 +288,6 @@ export default function Controls() {
       videoRef.src = currentRecording.url; // Set video to latest recording
       videoRef.play();
     }
-
-    await finishInterviewFn();
   };
 
   return (
