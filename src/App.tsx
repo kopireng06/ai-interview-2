@@ -9,7 +9,6 @@ import { submitAtom, currentStepAtom, interviewStep } from "./state/atom";
 import { useAtom } from "jotai";
 import { useAudioListener } from "./useAudioListener";
 import { FaArrowRight, FaLightbulb } from "react-icons/fa";
-import Joyride, { Step } from "react-joyride";
 import CustomModal from "./modal";
 import { useState } from "react";
 
@@ -102,8 +101,8 @@ function App() {
               </>
             ) : (
               <>
-                <li>“Sudah cukup, Raka.” - Lanjut ke pertanyaan berikutnya</li>
                 <li>“Saya siap, Raka.” - Mulai sesi interview</li>
+                <li>“Sudah cukup, Raka.” - Lanjut ke pertanyaan berikutnya</li>
                 <li>
                   “Tolong ulangi, Raka.” - Ulangi pertanyaan (hanya sekali)
                 </li>
@@ -124,20 +123,20 @@ function App() {
           <h3>Cara Menggunakan AI Interview:</h3>
           <ul className="list-[circle] m-none p-none">
             <li>
-              🔘 Klik <strong>"Mulai Interview"</strong> untuk memulai sesi
+              Klik <strong>"Mulai Interview"</strong> untuk memulai sesi
               interview.
             </li>
             <li>
-              🗣️ Ucapkan <strong>"Saya siap, Raka."</strong> untuk memulai sesi
+              Ucapkan <strong>"Saya siap, Raka."</strong> untuk memulai sesi
               tanya jawab.
             </li>
             <li>
-              ✅ Jawab setiap pertanyaan dengan jelas. Jika ingin lanjut ke
+              Jawab setiap pertanyaan dengan jelas. Jika ingin lanjut ke
               pertanyaan berikutnya, ucapkan{" "}
               <strong>"Sudah cukup, Raka."</strong>
             </li>
             <li>
-              🔄 Jika perlu mengulang pertanyaan, ucapkan{" "}
+              Jika perlu mengulang pertanyaan, ucapkan{" "}
               <strong>"Tolong ulangi, Raka."</strong>
               (Fitur ini hanya bisa digunakan sekali per pertanyaan.)
             </li>

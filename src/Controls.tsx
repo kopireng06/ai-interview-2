@@ -90,8 +90,10 @@ export default function Controls() {
     setIsRecording(false);
     listenToAudio("transition-start", () => {
       setCurrentStep(interviewStep.indexOf("question-1"));
+      setAudioType("question-1");
+
       listenToAudio("question-1", () => {
-        setAudioType("question-1");
+        setCurrentQuestion(1);
         startRecording();
       });
     });
@@ -100,9 +102,13 @@ export default function Controls() {
   function nextQuestionTrigger() {
     if (!isAnswering) return;
 
+    const newQuestion = currentQuestion + 1;
+
     stopRecording();
     SpeechRecognition.stopListening();
-    setCurrentQuestion(currentQuestion + 1);
+    setCurrentQuestion(newQuestion);
+
+    console.log(currentQuestion);
 
     if (currentStep == interviewStep.indexOf("question-5")) {
       SpeechRecognition.stopListening();
@@ -135,9 +141,9 @@ export default function Controls() {
         language: "id",
         continuous: true,
       });
-      setCurrentStep(interviewStep.indexOf(`question-${currentQuestion + 1}`));
+      setCurrentStep(interviewStep.indexOf(`question-${newQuestion}`));
 
-      listenToAudio(`question-${currentQuestion + 1}`, () => {
+      listenToAudio(`question-${newQuestion}`, () => {
         setRepeatQuota(1);
         startRecording();
       });
@@ -157,7 +163,7 @@ export default function Controls() {
         },
         {
           isFuzzyMatch: true,
-          command: /tolong ulang raka/,
+          command: /tolong ulangi raka/,
           callback: repeat,
         },
         {
