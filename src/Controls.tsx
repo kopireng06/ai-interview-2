@@ -108,22 +108,22 @@ export default function Controls() {
       return
     }
 
-    // if (currentStep == interviewStep.indexOf('question-4')) {
-    //   setCurrentStep(interviewStep.indexOf('transition-final'))
+    if (currentStep == interviewStep.indexOf('question-4')) {
+      setCurrentStep(interviewStep.indexOf('transition-final'))
 
-    //   listenToAudio('transition-final', () => {
-    //     setCurrentStep(interviewStep.indexOf('question-5'))
-    //     listenToAudio('question-5', () => {
-    //       setRepeatQuota(1)
-    //       startRecording()
-    //       SpeechRecognition.startListening({
-    //         language: 'id',
-    //         continuous: true
-    //       })
-    //     })
-    //   })
-    //   return
-    // }
+      listenToAudio('transition-final', () => {
+        setCurrentStep(interviewStep.indexOf('question-5'))
+        listenToAudio('question-5', () => {
+          setRepeatQuota(1)
+          startRecording()
+          SpeechRecognition.startListening({
+            language: 'id',
+            continuous: true
+          })
+        })
+      })
+      return
+    }
 
     listenToAudio('transition', () => {
       SpeechRecognition.startListening({
