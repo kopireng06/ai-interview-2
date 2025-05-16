@@ -149,17 +149,17 @@ export default function Controls() {
       commands: [
         {
           isFuzzyMatch: true,
-          command: /saya siap raka/,
+          command: /saya siap albi/,
           callback: start
         },
         {
           isFuzzyMatch: true,
-          command: /tolong ulangi raka/,
+          command: /tolong ulangi albi/,
           callback: repeat
         },
         {
           isFuzzyMatch: true,
-          command: /sudah cukup raka/,
+          command: /sudah cukup albi/,
           callback: nextQuestionTrigger
         }
       ]
