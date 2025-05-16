@@ -25,11 +25,11 @@ function App() {
 
   return (
     <>
-      <div className='h-screen overflow-y-auto p-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700'>
+      <div className='h-screen overflow-y-auto p-4 bg-white'>
         <SnackbarProvider preventDuplicate anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} />
         <div className='flex justify-between mb-10'>
-          <p className='mb-4 text-lg font-semibold text-white'>
-            Chat Id: <span className='font-bold text-primary-default'>{data?.data?.chat_id}</span>
+          <p className='mb-4 text-lg font-semibold text-[#bb1724]'>
+            Chat Id: <span className='font-bold text-[#bb1724]'>{data?.data?.chat_id}</span>
           </p>
           <button
             onClick={() => {
@@ -58,7 +58,7 @@ function App() {
         )}
       </div>
       <div className='absolute bottom-0 left-0 p-4'>
-        <button className='hint relative flex items-center justify-center w-12 h-12 rounded-full bg-yellow-300 hover:bg-yellow-400 transition duration-300'>
+        <button className='hint relative flex items-center justify-center w-12 h-12 rounded-full bg-[#bb1724] hover:bg-[#bb1724] transition duration-300'>
           <FaLightbulb className='text-white' />
         </button>
         <div className='menu p-4 text-left absolute !w-[500px] z-[20] left-20 bottom-4 w-64 p-2 bg-white rounded-lg shadow-md opacity-0 transition-opacity duration-300'>
