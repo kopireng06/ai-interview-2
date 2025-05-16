@@ -35,7 +35,7 @@ function App() {
             onClick={() => {
               window.location.href = '/check'
             }}
-            className='flex gap-2 items-center text-sm z-10 bg-primary-shade1 text-white px-2 py-1 rounded-xl hover:bg-primary-shade2 transition duration-300'
+            className='flex gap-2 items-center text-sm z-10 bg-[#bb1724] text-white px-2 py-1 rounded-xl transition duration-300'
           >
             Cek Hasil Interview Sebelumnya
             <FaArrowRight />

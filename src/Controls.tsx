@@ -292,7 +292,7 @@ export default function Controls() {
             <button
               disabled={!stream?.active || !isLoggedIn || isStarting}
               onClick={startInterview}
-              className='disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 bg-gradient-to-r from-primary-shade3 to-primary-shade1 text-white px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300'
+              className='disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 bg-[#bb1724] text-white px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300'
             >
               Mulai Interview
             </button>
@@ -301,7 +301,7 @@ export default function Controls() {
           {isInterviewStarted && isFinishBriefing && (
             <button
               onClick={start}
-              className='flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-shade3 to-primary-shade1 text-white rounded-full shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300'
+              className='flex items-center gap-2 px-6 py-3 bg-[#bb1724] text-white rounded-full shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300'
             >
               Saya siap
             </button>
@@ -312,7 +312,7 @@ export default function Controls() {
           {!!repeatQuota && isAnswering && audioPlayerStatus === 'ended' && !isInterviewEnded && (
             <button
               onClick={repeat}
-              className='flex items-center gap-2 bg-danger-default text-white px-6 py-3 rounded-full hover:bg-danger-tint1 hover:shadow-lg hover:scale-105 transition-all duration-300'
+              className='flex items-center gap-2 text-[#bb1724] bg-white px-6 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300'
             >
               Ulangi Pertanyaan
             </button>
@@ -321,7 +321,7 @@ export default function Controls() {
           {isAnswering && !isInterviewEnded && audioPlayerStatus === 'ended' && (
             <button
               onClick={nextQuestionTrigger}
-              className='flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-shade3 to-primary-shade1 text-white rounded-full shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300'
+              className='flex items-center gap-2 px-6 py-3 bg-[#bb1724] text-white rounded-full shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300'
             >
               {isLastQuestion ? 'Selesai' : 'Pertanyaan Berikutnya'}
             </button>
