@@ -50,7 +50,8 @@ export default function Controls() {
   const [repeatQuota, setRepeatQuota] = useState(1)
 
   const isInterviewStarted = !!data?.data?.chat_id
-  const isFinishBriefing = currentStep == interviewStep.indexOf('panduan') && audioPlayerStatus == 'ended'
+  const isFinishBriefing = currentStep == interviewStep.indexOf('opening') && audioPlayerStatus == 'ended'
+  // const isFinishBriefing = currentStep == interviewStep.indexOf('panduan') && audioPlayerStatus == 'ended'
   const isAnswering = currentStep > interviewStep.indexOf('transition-start')
   const isInterviewEnded = currentStep == interviewStep.indexOf('closing')
 
@@ -180,15 +181,15 @@ export default function Controls() {
       await startInterviewFn()
       setIsStarting(false)
       listenToAudio('opening', () => {
-        setAudioType('panduan')
-        setCurrentStep(interviewStep.indexOf('panduan'))
-        listenToAudio('panduan', () => {
-          setIsRecording(true)
-          SpeechRecognition.startListening({
-            language: 'id',
-            continuous: true
-          })
-        })
+        // setAudioType('panduan')
+        // setCurrentStep(interviewStep.indexOf('panduan'))
+        // listenToAudio('panduan', () => {
+        //   setIsRecording(true)
+        //   SpeechRecognition.startListening({
+        //     language: 'id',
+        //     continuous: true
+        //   })
+        // })
       })
     } catch (error) {
       return error
@@ -280,6 +281,8 @@ export default function Controls() {
       videoRef.play()
     }
   }
+
+  console.log({ isInterviewStarted })
 
   return (
     <div className='flex flex-col gap-4 mx-auto '>
