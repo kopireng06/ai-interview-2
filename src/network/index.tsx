@@ -182,7 +182,7 @@ const useStartInterview = () => {
       const response = await axiosInstance.post(
         '/ai/interviews/start',
         {
-          interview_type: 'bni_interview'
+          interview_type: 'alfamart_interview'
         },
         {
           headers: {

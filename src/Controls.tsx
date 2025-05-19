@@ -60,6 +60,8 @@ export default function Controls() {
     [recordings, currentQuestion]
   )
 
+  console.log({audioType})
+
   function repeat() {
     if (repeatQuota == 0) return
 
@@ -100,6 +102,7 @@ export default function Controls() {
     SpeechRecognition.stopListening()
     setCurrentQuestion(newQuestion)
 
+
     if (currentStep == interviewStep.indexOf('question-5')) {
       SpeechRecognition.stopListening()
       setCurrentStep(interviewStep.indexOf('closing'))
@@ -135,6 +138,7 @@ export default function Controls() {
 
       listenToAudio(`question-${newQuestion}`, () => {
         setRepeatQuota(1)
+        setAudioType(interviewStep[newQuestion])
         startRecording()
       })
     })

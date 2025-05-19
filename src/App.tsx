@@ -66,7 +66,12 @@ function App() {
           <ul className='text-gray-700 p-2 list-[circle] '>
             {!isInterviewStarted ? (
               <>
-                <li>Klik "Mulai Interview" untuk memulai sesi interview.</li>
+                <li>Klik "Saya siap"</li>
+                <li>Klik "Pertanyaan berikutnya"</li>
+                <li>
+                  Klik "ulangi pertanyaan" --hanya bisa sekali
+                </li>
+                {/* <li>Klik "Mulai Interview" untuk memulai sesi interview.</li>
                 <li>Ucapkan "Saya siap, Albi." untuk memulai sesi tanya jawab.</li>
                 <li>
                   Jawab setiap pertanyaan dengan jelas. Jika ingin lanjut ke pertanyaan berikutnya, ucapkan "Sudah
@@ -83,7 +88,7 @@ function App() {
                 <li>
                   Tips: Pastikan lingkungan Anda tenang dan mikrofon berfungsi dengan baik untuk pengalaman terbaik.
                 </li>
-                <li>Semoga sukses dalam interview ini! Jika sudah siap, silakan mulai.</li>
+                <li>Semoga sukses dalam interview ini! Jika sudah siap, silakan mulai.</li> */}
               </>
             ) : (
               <>
