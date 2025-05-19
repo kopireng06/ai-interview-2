@@ -99,8 +99,6 @@ export default function Controls() {
     SpeechRecognition.stopListening()
     setCurrentQuestion(newQuestion)
 
-    console.log(currentQuestion)
-
     if (currentStep == interviewStep.indexOf('question-5')) {
       SpeechRecognition.stopListening()
       setCurrentStep(interviewStep.indexOf('closing'))
