@@ -60,13 +60,14 @@ export default function Controls() {
     [recordings, currentQuestion]
   )
 
-  console.log({audioType})
 
   function repeat() {
     if (repeatQuota == 0) return
 
+    const currentQuestionAudio = interviewStep.filter((val)=>val.includes("question"))[currentQuestion - 1]
+
     SpeechRecognition.stopListening()
-    listenToAudio(audioType, () => {
+    listenToAudio(currentQuestionAudio, () => {
       setRepeatQuota(repeatQuota - 1)
       SpeechRecognition.startListening({
         language: 'id',
