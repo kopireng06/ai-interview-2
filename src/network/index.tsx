@@ -247,7 +247,8 @@ const useFinishInterview = () => {
       const response = await axiosInstance.post(
         '/ai/interviews/finish',
         {
-          chat_id: startInterviewData.data.chat_id
+          chat_id: startInterviewData.data.chat_id,
+          interview_type: 'alfamart_interview'
         },
         {
           headers: {

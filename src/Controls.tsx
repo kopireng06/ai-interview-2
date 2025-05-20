@@ -287,7 +287,6 @@ export default function Controls() {
     }
   }
 
-  console.log({ isInterviewStarted })
 
   return (
     <div className='flex flex-col gap-4 mx-auto '>
