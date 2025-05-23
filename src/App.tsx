@@ -116,20 +116,16 @@ function App() {
               Jika perlu mengulang pertanyaan, klik "Pertanyaan Berikutnya." (Fitur ini hanya bisa digunakan sekali per
               pertanyaan.)
             </li>
-            <li>
-              ⚠️ Jika perintah suara tidak diproses, gunakan tombol di layar untuk mengulang sesi Q&A atau mengulang
-              pertanyaan.
-            </li>
-            <li>
-              ⚡️ Tips: Pastikan lingkungan Anda tenang dan mikrofon berfungsi dengan baik untuk pengalaman terbaik.
-            </li>
-            <li>🚀 Semoga sukses dalam interview ini! Jika sudah siap, silkan mulai.</li>
           </ul>
           <p className='mt-4'>
-            <strong>⚡ Tips:</strong> Pastikan lingkungan Anda tenang dan mikrofon berfungsi dengan baik untuk
+            ⚠️ Jika perintah suara tidak diproses, gunakan tombol di layar untuk mengulang sesi Q&A atau mengulang
+            pertanyaan.
+          </p>
+          <p className='my-0'>
+            <strong>⚡️ Tips:</strong> Pastikan lingkungan Anda tenang dan mikrofon berfungsi dengan baik untuk
             pengalaman terbaik.
           </p>
-          <p className='mt-4'>🚀 Semoga sukses dalam interview ini! Jika sudah siap, silakan mulai.</p>
+          <p className='my-0'>🚀 Semoga sukses dalam interview ini! Jika sudah siap, silakan mulai.</p>
         </div>
       </CustomModal>
     </>
