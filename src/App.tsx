@@ -68,9 +68,7 @@ function App() {
               <>
                 <li>Klik "Saya siap"</li>
                 <li>Klik "Pertanyaan berikutnya"</li>
-                <li>
-                  Klik "ulangi pertanyaan" --hanya bisa sekali
-                </li>
+                <li>Klik "ulangi pertanyaan" --hanya bisa sekali</li>
                 {/* <li>Klik "Mulai Interview" untuk memulai sesi interview.</li>
                 <li>Ucapkan "Saya siap, Albi." untuk memulai sesi tanya jawab.</li>
                 <li>
@@ -109,24 +107,23 @@ function App() {
         <div>
           <h3>Cara Menggunakan AI Interview:</h3>
           <ul className='list-[circle] m-none p-none'>
+            <li>Klik "Saya Siap" untuk memulai sesi tanya jawab.</li>
             <li>
-              Klik <strong>"Mulai Interview"</strong> untuk memulai sesi interview.
+              Jawab setiap pertanyaan dengan jelas. Jika ingin lanjut ke pertanyaan berikutnya, klik "Pertanyaan
+              Berikutnya"
             </li>
             <li>
-              Ucapkan <strong>"Saya siap, Albi."</strong> untuk memulai sesi tanya jawab.
-            </li>
-            <li>
-              Jawab setiap pertanyaan dengan jelas. Jika ingin lanjut ke pertanyaan berikutnya, ucapkan{' '}
-              <strong>"Sudah cukup, Albi."</strong>
-            </li>
-            <li>
-              Jika perlu mengulang pertanyaan, ucapkan <strong>"Tolong ulangi, Albi."</strong>
-              (Fitur ini hanya bisa digunakan sekali per pertanyaan.)
+              Jika perlu mengulang pertanyaan, klik "Pertanyaan Berikutnya." (Fitur ini hanya bisa digunakan sekali per
+              pertanyaan.)
             </li>
             <li>
               ⚠️ Jika perintah suara tidak diproses, gunakan tombol di layar untuk mengulang sesi Q&A atau mengulang
               pertanyaan.
             </li>
+            <li>
+              ⚡️ Tips: Pastikan lingkungan Anda tenang dan mikrofon berfungsi dengan baik untuk pengalaman terbaik.
+            </li>
+            <li>🚀 Semoga sukses dalam interview ini! Jika sudah siap, silkan mulai.</li>
           </ul>
           <p className='mt-4'>
             <strong>⚡ Tips:</strong> Pastikan lingkungan Anda tenang dan mikrofon berfungsi dengan baik untuk
